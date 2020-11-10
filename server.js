@@ -33,7 +33,15 @@ app.prepare().then(() => {
     })
   );
 
-  server.use(verifyRequest());
+  server.use(
+    verifyRequest()
+      // path to redirect to if verification fails
+      // defaults to '/auth'
+      // (authRoute: "/foo/auth"),
+      // path to redirect to if verification fails and there is no shop on the query
+      // defaults to '/auth'
+      // (fallbackRoute: "/install")
+ 
   server.use(async (ctx) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
