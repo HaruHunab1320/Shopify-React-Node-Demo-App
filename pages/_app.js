@@ -16,7 +16,7 @@ class MyApp extends App {
       <>
         <Head>
           <title>Sample App</title>
-          <meta chatSet="utf-8" />
+          <meta charSet="utf-8" />
         </Head>
         {/* Polaris AppProvider component passes down the props and context */}
         {/* When using Polaris, you are able to import translations from all languages supported by the core Shopify product and consume them through the i18n prop. */}
