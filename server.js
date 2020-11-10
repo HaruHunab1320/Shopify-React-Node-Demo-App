@@ -1,7 +1,11 @@
 require("isomorphic-fetch");
+//process .env files
 const dotenv = require("dotenv");
+// web framework build by express
 const Koa = require("koa");
+//React framework that takes care of some redundancies in development
 const next = require("next");
+//Middleware to authenticate a Koa application with Shopify.
 const { default: createShopifyAuth } = require("@shopify/koa-shopify-auth");
 const { verifyRequest } = require("@shopify/koa-shopify-auth");
 const session = require("koa-session");
@@ -16,10 +20,13 @@ const handle = app.getRequestHandler();
 const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
 
 app.prepare().then(() => {
+  //initialize a new koa server
   const server = new Koa();
+  // sets up secure session data on each request
   server.use(session({ secure: true, sameSite: "none" }, server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
 
+  // sets up shopify auth
   server.use(
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
@@ -33,15 +40,18 @@ app.prepare().then(() => {
     })
   );
 
-  server.use(
-    verifyRequest()
-      // path to redirect to if verification fails
-      // defaults to '/auth'
-      // (authRoute: "/foo/auth"),
-      // path to redirect to if verification fails and there is no shop on the query
-      // defaults to '/auth'
-      // (fallbackRoute: "/install")
- 
+  // everything after this point will require authentication
+
+  // For VerifyRequest() options:
+  // path to redirect to if verification fails
+  // defaults to '/auth'
+  // (authRoute: "/foo/auth"),
+  // path to redirect to if verification fails and there is no shop on the query
+  // defaults to '/auth'
+  // (fallbackRoute: "/install")
+  server.use(verifyRequest());
+
+  // application code
   server.use(async (ctx) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
