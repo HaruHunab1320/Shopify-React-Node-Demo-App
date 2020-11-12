@@ -1,9 +1,16 @@
 import { EmptyState, Layout, Page } from "@shopify/polaris";
+import { TitleBar } from "@shopify/app-bridge-react";
 
 const img = "https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg";
 
 const Index = () => (
   <Page>
+    <TitleBar
+      title="Sample App"
+      primaryAction={{
+        content: "Select products",
+      }}
+    />
     <Layout>
       {/* Polaris Empty state component helps to communicate the value of your app and its primary action when merchants first add it to their Shopify admin. */}
       <EmptyState
