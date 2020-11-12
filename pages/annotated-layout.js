@@ -5,8 +5,10 @@ import {
   FormLayout,
   Layout,
   Page,
+  SettingToggle,
   Stack,
   TextField,
+  TextStyle,
 } from "@shopify/polaris";
 
 import React from "react";
@@ -14,10 +16,13 @@ import React from "react";
 class AnnotatedLayout extends React.Component {
   state = {
     discount: "10%",
+    enabled: false,
   };
 
   render() {
-    const { discount } = this.state;
+    const { discount, enabled } = this.state;
+    const contentStatus = enabled ? "enabled" : "disabled";
+    const textStatus = enabled ? "enabled" : "disabled";
 
     return (
       <Page>
@@ -44,6 +49,21 @@ class AnnotatedLayout extends React.Component {
               </Form>
             </Card>
           </Layout.AnnotatedSection>
+          <Layout.AnnotatedSection
+            title="Price updates"
+            description="Temporarily disable all Sample App price update"
+          >
+            <SectionToggle
+              action={{
+                content: contentStatus,
+                onAction: this.handleToggle,
+              }}
+              enabled={enabled}
+            >
+              This setting is{" "}
+              <TextStyle variation="strong">{textStatus}</TextStyle>.
+            </SectionToggle>
+          </Layout.AnnotatedSection>
         </Layout>
       </Page>
     );
@@ -54,6 +74,12 @@ class AnnotatedLayout extends React.Component {
       discount: this.state.discount,
     });
     console.log("submission", this.state);
+  };
+
+  handleToggle = () => {
+    this.setState(({ enabled }) => {
+      return { enabled: !enabled };
+    });
   };
 
   handleChange = (field) => {
