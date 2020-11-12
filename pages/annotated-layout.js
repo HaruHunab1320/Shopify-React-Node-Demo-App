@@ -53,7 +53,7 @@ class AnnotatedLayout extends React.Component {
             title="Price updates"
             description="Temporarily disable all Sample App price update"
           >
-            <SectionToggle
+            <SettingToggle
               action={{
                 content: contentStatus,
                 onAction: this.handleToggle,
@@ -62,7 +62,7 @@ class AnnotatedLayout extends React.Component {
             >
               This setting is{" "}
               <TextStyle variation="strong">{textStatus}</TextStyle>.
-            </SectionToggle>
+            </SettingToggle>
           </Layout.AnnotatedSection>
         </Layout>
       </Page>
@@ -76,14 +76,14 @@ class AnnotatedLayout extends React.Component {
     console.log("submission", this.state);
   };
 
+  handleChange = (field) => {
+    return (value) => this.setState({ [field]: value });
+  };
+
   handleToggle = () => {
     this.setState(({ enabled }) => {
       return { enabled: !enabled };
     });
-  };
-
-  handleChange = (field) => {
-    return (value) => this.setState({ [field]: value });
   };
 }
 
