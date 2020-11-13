@@ -12,6 +12,8 @@ const session = require("koa-session");
 
 dotenv.config();
 const { default: graphQLProxy } = require("@shopify/koa-shopify-graphql-proxy");
+// Grab graphQL API Version
+const { ApiVersion } = require("@shopify/koa-shopify-graphql-proxy");
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -32,7 +34,7 @@ app.prepare().then(() => {
     createShopifyAuth({
       apiKey: SHOPIFY_API_KEY,
       secret: SHOPIFY_API_SECRET_KEY,
-      scopes: ["read_products"],
+      scopes: ["read_products", "write_products"],
       afterAuth(ctx) {
         const { shop, accessToken } = ctx.session;
         ctx.cookies.set("shopOrigin", shop, {
@@ -45,16 +47,19 @@ app.prepare().then(() => {
     })
   );
 
-  server.use(graphQLProxy());
+  server.use(graphQLProxy({ version: ApiVersion.October19 }));
+
   // Everything after this point will require authentication
 
   // For VerifyRequest() options:
-  // path to redirect to if verification fails
-  // defaults to '/auth'
-  // (authRoute: "/foo/auth"),
-  // path to redirect to if verification fails and there is no shop on the query
-  // defaults to '/auth'
-  // (fallbackRoute: "/install")
+  /* path to redirect to if verification fails
+  defaults to '/auth'
+  (authRoute: "/foo/auth"),
+  path to redirect to if verification fails and there is no shop on the query
+  defaults to '/auth'
+  (fallbackRoute: "/install")
+  */
+
   server.use(verifyRequest());
 
   // application code
