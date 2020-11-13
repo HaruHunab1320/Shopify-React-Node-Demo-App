@@ -11,6 +11,7 @@ import "@shopify/polaris/dist/styles.css";
 // Translations are required for AppProvider
 import translations from "@shopify/polaris/locales/en.json";
 import Cookies from "js-cookie";
+import ClientRouter from "../components/ClientRouter";
 
 class MyApp extends App {
   render() {
@@ -27,7 +28,11 @@ class MyApp extends App {
           <title>Sample App</title>
           <meta charSet="utf-8" />
         </Head>
+        {/* This provides the app with the credentials to access the shop */}
         <Provider config={config}>
+          {/* This overrides App Bridge's default behaviour of routing changes from outside the app by updating the iframe URL. We do this because this app is using Client-side routing through Next.js. This allows us to avoid unnecessary full-page reloads. */}
+          <ClientRouter />
+
           {/* Polaris AppProvider component passes down the props and context */}
           {/* When using Polaris, you are able to import translations from all languages supported by the core Shopify product and consume them through the i18n prop. */}
           <AppProvider i18n={translations}>
