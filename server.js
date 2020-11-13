@@ -1,7 +1,7 @@
 require("isomorphic-fetch");
 //process .env files
 const dotenv = require("dotenv");
-// web framework build by express
+// web framework built by express
 const Koa = require("koa");
 //React framework that takes care of some redundancies in development
 const next = require("next");
@@ -11,6 +11,7 @@ const { verifyRequest } = require("@shopify/koa-shopify-auth");
 const session = require("koa-session");
 
 dotenv.config();
+const { default: graphQLProxy } = require("@shopify/koa-shopify-graphql-proxy");
 
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -44,7 +45,8 @@ app.prepare().then(() => {
     })
   );
 
-  // everything after this point will require authentication
+  server.use(graphQLProxy());
+  // Everything after this point will require authentication
 
   // For VerifyRequest() options:
   // path to redirect to if verification fails
