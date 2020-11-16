@@ -1,6 +1,9 @@
 import React from "react";
 import { EmptyState, Layout, Page } from "@shopify/polaris";
 import { ResourcePicker, TitleBar } from "@shopify/app-bridge-react";
+//a cross-browser JavaScript library for managing localStorage,
+import store from "store-js";
+import ResourceListWithProducts from "../components/ResourceList";
 
 const img = "https://cdn.shopify.com/s/files/1/0757/9955/files/empty-state.svg";
 
@@ -36,13 +39,15 @@ class Index extends React.Component {
             Sample app using React and Next.js
           </EmptyState>
         </Layout>
+        <ResourceListWithProducts />
       </Page>
     );
   }
   handleSelection = (resources) => {
     const idsFromResources = resources.selection.map((product) => product.id);
     this.setState({ open: false });
-    console.log(idsFromResources);
+    // This works well for testing our development app, but we should store these IDS in a database
+    store.set("ids", idsFromResources);
   };
 }
 
