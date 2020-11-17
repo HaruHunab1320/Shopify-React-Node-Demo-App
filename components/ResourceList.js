@@ -28,6 +28,14 @@ const GET_PRODUCTS_BY_ID = gql`
             }
           }
         }
+        variants(first: 1) {
+          edges {
+            node {
+              price
+              id
+            }
+          }
+        }
       }
     }
   }
@@ -49,6 +57,7 @@ class ResourceListWithProducts extends React.Component {
                 resourceName={{ singular: "Product", plural: "Products" }}
                 items={data.nodes}
                 renderItem={(item) => {
+                  console.log(item);
                   const media = (
                     <Thumbnail
                       source={
@@ -68,7 +77,7 @@ class ResourceListWithProducts extends React.Component {
                     <ResourceList.Item
                       id={item.id}
                       media={media}
-                      accessabilityLabel={`View details for ${item.title}`}
+                      accessibilityLabel={`View details for ${item.title}`}
                     >
                       <Stack>
                         <Stack.Item fill>
