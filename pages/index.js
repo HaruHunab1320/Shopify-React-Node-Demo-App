@@ -27,23 +27,27 @@ class Index extends React.Component {
           onSelection={(resources) => this.handleSelection(resources)}
           onCancel={() => this.setState({ open: false })}
         />
-        <Layout>
-          {/* Polaris Empty state component helps to communicate the value of your app and its primary action when merchants first add it to their Shopify admin. */}
-          <EmptyState
-            heading="Discount your products temporarily"
-            action={{
-              content: "Select Products",
-              onAction: () => this.setState({ open: true }),
-            }}
-            image={img}
-          >
-            Sample app using React and Next.js
-          </EmptyState>
-        </Layout>
-        <ResourceListWithProducts />
+        {emptyState ? (
+          <Layout>
+            {/* Polaris Empty state component helps to communicate the value of your app and its primary action when merchants first add it to their Shopify admin. */}
+            <EmptyState
+              heading="Discount your products temporarily"
+              action={{
+                content: "Select Products",
+                onAction: () => this.setState({ open: true }),
+              }}
+              image={img}
+            >
+              <p>Select products to change their price temporarily.</p>
+            </EmptyState>
+          </Layout>
+        ) : (
+          <ResourceListWithProducts />
+        )}
       </Page>
     );
   }
+
   handleSelection = (resources) => {
     const idsFromResources = resources.selection.map((product) => product.id);
     this.setState({ open: false });

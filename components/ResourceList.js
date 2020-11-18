@@ -57,7 +57,7 @@ class ResourceListWithProducts extends React.Component {
                 resourceName={{ singular: "Product", plural: "Products" }}
                 items={data.nodes}
                 renderItem={(item) => {
-                  console.log(item);
+                  // console.log(item);
                   const media = (
                     <Thumbnail
                       source={
@@ -90,9 +90,9 @@ class ResourceListWithProducts extends React.Component {
                         <Stack.Item>
                           <p>${price}</p>
                         </Stack.Item>
-                        <Stack.item>
+                        <Stack.Item>
                           <p>Expires on {twoWeeksFromNow}</p>
-                        </Stack.item>
+                        </Stack.Item>
                       </Stack>
                     </ResourceList.Item>
                   );
