@@ -44,13 +44,15 @@ const GET_PRODUCTS_BY_ID = gql`
 `;
 
 class ResourceListWithProducts extends React.Component {
+  //Take data provided from Context provider and assign to contentType. This gives my render function access to the context data using this.context.
   static contextType = Context;
 
   render() {
-    //Im a bit unsure as to where the .context comes from and what that is.
+    //In this case, this.context is receiving: {"localOrigin":"https://b51133470b19.ngrok.io","hooks":{"map":{"UpdateAction":[{}],"DispatchAction":[{},{}]}}}
     const app = this.context;
     const redirectToProduct = () => {
       const redirect = Redirect.create(app);
+      //Redirect to a local app path.
       redirect.dispatch(Redirect.Action.APP, "/edit-products");
     };
     const twoWeeksFromNow = new Date(Date.now() + 12096e5).toDateString();
