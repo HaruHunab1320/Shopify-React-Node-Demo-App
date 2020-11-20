@@ -10,6 +10,21 @@ import {
   TextField,
 } from "@shopify/polaris";
 import store from "store-js";
+import gql from "graphql-tag";
+
+const UPDATE_PRICE = gql`
+  mutation productVariantUpdate($input: ProductVariantInput!) {
+    productVariantUpdate(input: $input) {
+      product {
+        title
+      }
+      productVariant {
+        id
+        price
+      }
+    }
+  }
+`;
 
 class EditProducts extends React.Component {
   state = {
