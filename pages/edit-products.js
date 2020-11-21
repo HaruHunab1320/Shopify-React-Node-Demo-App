@@ -1,13 +1,16 @@
 import React from "react";
 import {
+  Banner,
   Card,
   DisplayText,
   Form,
   FormLayout,
+  Frame
   Layout,
   Page,
   PageActions,
   TextField,
+  Toast,
 } from "@shopify/polaris";
 import store from "store-js";
 import gql from "graphql-tag";
@@ -32,6 +35,7 @@ class EditProducts extends React.Component {
     discount: "",
     price: "",
     variantId: "",
+    showToast: false,
   };
 
   componentDidMount() {
@@ -43,9 +47,23 @@ class EditProducts extends React.Component {
     return (
       <Mutation mutation={UPDATE_PRICE}>
         {(handleSubmit, { error, data }) => {
+          const showError = error && (
+            <Banner status="critical">{error.message}</Banner>
+          )
+          const showToast = data && data.productVariantUpdate && (
+            <Toast 
+            content="Successfully updated"
+            onDismiss={() => this.setState({ showToast: false})}
+            />
+          )
           return (
+            <Frame>
             <Page>
               <Layout>
+                {showToast}
+                <Layout.Section>
+                  {showError}
+                </Layout.Section>
                 <Layout.Section>
                   <DisplayText size="large">{name}</DisplayText>
                   <Form>
@@ -75,7 +93,13 @@ class EditProducts extends React.Component {
                         {
                           content: "Save",
                           onAction: () => {
-                            console.log("submitted");
+                            const productVariableInput = {
+                              id: variantId,
+                              price: discount,
+                            };
+                            handleSubmit({
+                              variables: { input: productVariableInput },
+                            });
                           },
                         },
                       ]}
@@ -89,6 +113,7 @@ class EditProducts extends React.Component {
                 </Layout.Section>
               </Layout>
             </Page>
+            </Frame>
           );
         }}
       </Mutation>
