@@ -12,6 +12,12 @@ const session = require("koa-session");
 
 dotenv.config();
 const { default: graphQLProxy } = require("@shopify/koa-shopify-graphql-proxy");
+const Router = require("koa-router");
+//Webhooks
+const {
+  receiveWebhook,
+  registerWebhook,
+} = require("@shopify/koa-shopify-webhooks");
 // Grab graphQL API Version
 const { ApiVersion } = require("@shopify/koa-shopify-graphql-proxy");
 const getSubscriptionUrl = require("./server/getSubscriptionUrl");
@@ -21,11 +27,13 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY } = process.env;
+const { SHOPIFY_API_SECRET_KEY, SHOPIFY_API_KEY, HOST } = process.env;
 
 app.prepare().then(() => {
   //initialize a new koa server
   const server = new Koa();
+  // initialize KOA router
+  const router = new Router();
   // sets up secure session data on each request
   server.use(session({ secure: true, sameSite: "none" }, server));
   server.keys = [SHOPIFY_API_SECRET_KEY];
@@ -44,10 +52,32 @@ app.prepare().then(() => {
           secure: true,
           sameSite: "none",
         });
+
+        //Register web hook, Need to find the latest apiVersion
+        const registration = await registerWebhook({
+          address: `${HOST}/webhooks/products/create`,
+          topic: "PRODUCTS_CREATE",
+          accessToken,
+          shop,
+          apiVersion: ApiVersion.October19,
+        });
+
+        if (registration.success) {
+          console.log("Successfully registered webhook!");
+        } else {
+          console.log("Failed to register webhook", registration.result);
+        }
         await getSubscriptionUrl(ctx, accessToken, shop);
       },
     })
   );
+
+  //Receive webhook when product is created
+  const webhook = receiveWebhook({ secret: SHOPIFY_API_SECRET_KEY });
+
+  router.post("/webhooks/products/create", webhook, (ctx) => {
+    console.log("received webhook: ", ctx.state.webhook);
+  });
 
   server.use(graphQLProxy({ version: ApiVersion.October19 }));
 
