@@ -76,6 +76,7 @@ app.prepare().then(() => {
   const webhook = receiveWebhook({ secret: SHOPIFY_API_SECRET_KEY });
 
   router.post("/webhooks/products/create", webhook, (ctx) => {
+    //In a production app, you would need to store the webhook in a database to access the response on the frontend.
     console.log("received webhook: ", ctx.state.webhook);
   });
 
@@ -92,15 +93,15 @@ app.prepare().then(() => {
   (fallbackRoute: "/install")
   */
 
-  server.use(verifyRequest());
-
-  // application code
-  server.use(async (ctx) => {
+  // Send verifyRequest() and the app code through the route
+  router.get("(.*)", verifyRequest(), async (ctx) => {
     await handle(ctx.req, ctx.res);
     ctx.respond = false;
     ctx.res.statusCode = 200;
-    return;
   });
+
+  server.use(router.allowedMethods());
+  server.use(router.routes());
 
   server.listen(port, () => {
     console.log(`> Ready on http://localhost:${port}`);
