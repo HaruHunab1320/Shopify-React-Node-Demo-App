@@ -22,17 +22,17 @@ const getSubscriptionUrl = async (ctx, accessToken, shop) => {
               }
             }
           }
-        ]
-        )  {
-            userErrors {
-              field
-              message
-            }
-            confirmationUrl
-            appSubscription {
-              id
-            }
-        }
+          ]
+      )  {
+          userErrors {
+            field
+            message
+          }
+          confirmationUrl
+          appSubscription {
+            id
+          }
+      }
     }`,
   });
 
